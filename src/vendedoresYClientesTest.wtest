@@ -1,0 +1,66 @@
+import vendedores.*
+import provinciasYCiudades.*
+import clientes.*
+
+
+test "vendedoresYClientesTest" {
+
+	const cosetti = new VendedorFijo(ciudadDondeVive = bragado)
+	cosetti.agregarCertificado(new Certificado(puntos = 10))
+	cosetti.agregarCertificado(new Certificado(puntos = 25, esDeProducto = false))
+	const santos = new VendedorViajante()
+	santos.agregarCertificado(new Certificado(puntos = 10, esDeProducto = false))
+	santos.agregarCertificado(new Certificado(puntos = 10))
+	santos.agregarCertificado(new Certificado(puntos = 3))
+	santos.agregarCertificado(new Certificado(puntos = 4))
+	santos.agregarProvincia(buenosAires)
+	santos.agregarProvincia(entreRios)
+	const laCasaDelSonido = new ComercioCorresponsal()
+	laCasaDelSonido.agregarSucursalEnCiudad(chivilcoy)
+	laCasaDelSonido.agregarSucursalEnCiudad(rosario)
+	laCasaDelSonido.agregarSucursalEnCiudad(lobos)
+	laCasaDelSonido.agregarCertificado(new Certificado(puntos = 15))
+	laCasaDelSonido.agregarCertificado(new Certificado(puntos = 8))
+	laCasaDelSonido.agregarCertificado(new Certificado(puntos = 10, esDeProducto = false))
+	
+	assert.that(cosetti.puedeTrabajarEn(bragado))
+	assert.notThat(cosetti.puedeTrabajarEn(sanFrancisco))
+	assert.that(cosetti.esFirme())
+	assert.notThat(cosetti.esVersatil())
+	assert.that(santos.puedeTrabajarEn(bragado))
+	assert.notThat(santos.esFirme())
+	assert.that(santos.esVersatil())
+	assert.notThat(santos.puedeTrabajarEn(rosario))
+	assert.notThat(laCasaDelSonido.puedeTrabajarEn(diamante))
+	assert.that(laCasaDelSonido.puedeTrabajarEn(chivilcoy))
+	assert.that(laCasaDelSonido.esFirme())
+	assert.that(laCasaDelSonido.esVersatil())
+	
+	const farvega = new ComercioCorresponsal()
+	farvega.agregarSucursalEnCiudad(sanFrancisco)
+	farvega.agregarSucursalEnCiudad(bragado)
+	farvega.agregarSucursalEnCiudad(rafaela)
+	
+	assert.notThat(cosetti.esVendedorInfluyente())
+	assert.notThat(laCasaDelSonido.esVendedorInfluyente())
+	assert.that(santos.esVendedorInfluyente())
+	assert.that(farvega.esVendedorInfluyente())
+	
+	const gomez = new ClienteInseguro()
+	const perez = new ClienteDetallista()
+	const diaz = new ClienteHumanista()
+	
+	assert.that(gomez.puedeSerAtendidoPor(laCasaDelSonido))
+	assert.notThat(gomez.puedeSerAtendidoPor(farvega))
+	assert.notThat(gomez.puedeSerAtendidoPor(santos))
+	assert.notThat(gomez.puedeSerAtendidoPor(cosetti))
+	assert.that(perez.puedeSerAtendidoPor(santos))
+	assert.notThat(perez.puedeSerAtendidoPor(cosetti))
+	assert.notThat(perez.puedeSerAtendidoPor(laCasaDelSonido))
+	assert.notThat(perez.puedeSerAtendidoPor(farvega))
+	assert.that(diaz.puedeSerAtendidoPor(santos))
+	assert.that(diaz.puedeSerAtendidoPor(cosetti))
+	assert.notThat(diaz.puedeSerAtendidoPor(farvega))
+	assert.notThat(diaz.puedeSerAtendidoPor(laCasaDelSonido))
+
+}

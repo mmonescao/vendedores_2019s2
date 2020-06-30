@@ -1,0 +1,82 @@
+import provinciasYCiudades.*
+import vendedores.*
+import centrosDeDistribucion.*
+
+test "centrosTest" {
+
+	
+	const cosetti = new VendedorFijo(ciudadDondeVive = zarate)
+	cosetti.agregarCertificado(new Certificado(puntos = 10))
+	cosetti.agregarCertificado(new Certificado(puntos = 25, esDeProducto = false))
+	const santos = new VendedorViajante()
+	santos.agregarCertificado(new Certificado(puntos = 10, esDeProducto = false))
+	santos.agregarCertificado(new Certificado(puntos = 10))
+	santos.agregarCertificado(new Certificado(puntos = 3))
+	santos.agregarCertificado(new Certificado(puntos = 4))
+	santos.agregarProvincia(buenosAires)
+	const laCasaDelSonido = new ComercioCorresponsal()
+	laCasaDelSonido.agregarSucursalEnCiudad(chivilcoy)
+	laCasaDelSonido.agregarSucursalEnCiudad(rosario)
+	laCasaDelSonido.agregarSucursalEnCiudad(lobos)
+	laCasaDelSonido.agregarSucursalEnCiudad(amstrong)
+	laCasaDelSonido.agregarCertificado(new Certificado(puntos = 15))
+	laCasaDelSonido.agregarCertificado(new Certificado(puntos = 8))
+	laCasaDelSonido.agregarCertificado(new Certificado(puntos = 10, esDeProducto = false))
+	const farvega = new ComercioCorresponsal()
+	farvega.agregarCertificado(new Certificado(puntos = 10))
+	farvega.agregarCertificado(new Certificado(puntos = 10))
+	farvega.agregarCertificado(new Certificado(puntos = 10))
+	farvega.agregarSucursalEnCiudad(sanFrancisco)
+	farvega.agregarSucursalEnCiudad(bragado)
+	farvega.agregarSucursalEnCiudad(rafaela)
+
+	const laPerla = new CentroDeDistribucion(ciudad = amstrong)
+	const conoSur = new CentroDeDistribucion(ciudad = zarate)
+	
+	
+	laPerla.agregarVendedor(santos)
+	conoSur.agregarVendedor(cosetti)
+	conoSur.agregarVendedor(farvega)
+	conoSur.agregarVendedor(laCasaDelSonido)
+	
+	assert.equals(santos, laPerla.vendedorEstrella())
+	assert.equals([cosetti,laCasaDelSonido], conoSur.vendedoresGenericos())
+	assert.that(conoSur.puedeCubrir(zarate))
+	assert.notThat(conoSur.puedeCubrir(diamante))
+	assert.that(conoSur.esRobusto())
+	
+	assert.equals(27, santos.puntajeTotal())
+	assert.equals(35, cosetti.puntajeTotal())
+	assert.equals(33, laCasaDelSonido.puntajeTotal())
+	assert.equals(30, farvega.puntajeTotal())
+	
+	laPerla.repartirCertificado(new Certificado(puntos = 5))
+	conoSur.repartirCertificado(new Certificado(puntos = 5))
+	
+	assert.equals(32, santos.puntajeTotal())
+	assert.equals(40, cosetti.puntajeTotal())
+	assert.equals(38, laCasaDelSonido.puntajeTotal())
+	assert.equals(35, farvega.puntajeTotal())
+	
+	assert.notThat(farvega.tieneAfinidadCon(conoSur))
+	assert.notThat(farvega.tieneAfinidadCon(laPerla))
+	assert.notThat(cosetti.tieneAfinidadCon(laPerla))
+	assert.that(cosetti.tieneAfinidadCon(conoSur))
+	assert.that(santos.tieneAfinidadCon(conoSur))
+	assert.notThat(santos.tieneAfinidadCon(laPerla))
+	assert.notThat(laCasaDelSonido.tieneAfinidadCon(conoSur))
+	assert.that(laCasaDelSonido.tieneAfinidadCon(laPerla))
+
+	assert.notThat(laPerla.esCandidato(farvega))
+	assert.notThat(laPerla.esCandidato(cosetti))
+	assert.notThat(laPerla.esCandidato(santos))
+	assert.that(laPerla.esCandidato(laCasaDelSonido))
+	assert.notThat(conoSur.esCandidato(farvega))
+	assert.notThat(conoSur.esCandidato(laCasaDelSonido))
+	assert.that(conoSur.esCandidato(cosetti))
+	assert.that(conoSur.esCandidato(santos))
+	
+	assert.throwsException({conoSur.agregarVendedor(cosetti)})
+	assert.throwsException({laPerla.agregarVendedor(santos)})
+}
+
